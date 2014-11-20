@@ -71,5 +71,5 @@ def create_database():
     db.session.commit()
 
 if __name__ == '__main__':
-    #create_database()
+    create_database()
     app.run(debug = True)
