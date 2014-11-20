@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}iFlask{% endblock %}
+
+{% block page_content %}
+    {%for t in todos%}
+        <li>{{t.title}} - {{t.post_date}} - {{t.status}}</li>
+    {% endfor %}
+{% endblock %}

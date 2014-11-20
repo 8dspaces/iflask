@@ -1,5 +1,6 @@
-from flask import Flask 
+from flask import Flask, render_template, session, redirect, url_for, flash
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.bootstrap import Bootstrap
 from datetime import datetime
 import os 
 
@@ -10,7 +11,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir,'test.db')
 app = Flask(__name__)
 app.config.from_object(__name__) 
 db = SQLAlchemy(app)
-
+bootstrap = Bootstrap(app)
 
 class Todo(db.Model):
     
@@ -33,6 +34,7 @@ class Todo(db.Model):
         self.status = status
     
     def __repr__(self):
+        
         return '<Todo %r>' % self.title 
     
 class Category(db.Model):
@@ -44,15 +46,24 @@ class Category(db.Model):
         self.name = name
     
     def __repr__(self):
-        return 
+        return '<Category %r>' % self.name
 
 # view functions 
 @app.route('/')
 @app.route('/index/')
 def index():
+    todos = Todo.query.all()
+    return render_template('index.html',todos = todos )
+    #return ''.join('+++'.join([x.title for x in Todo.query.all()]))
+    
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
-    return ''.join('+++'.join([x.title for x in Todo.query.all()]))
-        
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500        
 
 def create_database():
     c = Category('python')
@@ -71,5 +82,6 @@ def create_database():
     db.session.commit()
 
 if __name__ == '__main__':
-    create_database()
+    #db.create_all()
+    #create_database()
     app.run(debug = True)
