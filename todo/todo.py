@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect, url_for, flash
+from flask import Flask, render_template, session, redirect, url_for, flash,request
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bootstrap import Bootstrap
 from datetime import datetime
@@ -25,7 +25,7 @@ class Todo(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', backref = db.backref('todos',lazy='dynamic'))
     
-    def __init__(self, title, category, post_date = None, status = False):
+    def __init__(self, title, category = None, post_date = None, status = False):
         self.title = title 
         self.category = category 
         if post_date is None:
@@ -36,6 +36,8 @@ class Todo(db.Model):
     def __repr__(self):
         
         return '<Todo %r>' % self.title 
+        
+    
     
 class Category(db.Model):
 
@@ -52,9 +54,42 @@ class Category(db.Model):
 @app.route('/')
 @app.route('/index/')
 def index():
-    todos = Todo.query.all()
-    return render_template('index.html',todos = todos )
-    #return ''.join('+++'.join([x.title for x in Todo.query.all()]))
+    todos = Todo.query.filter(Todo.status == False).all()
+    dones = Todo.query.filter(Todo.status == True).all()
+    categories = Category.query.all()
+    return render_template('index.html',todos = todos, dones = dones, categories=categories )
+
+@app.route('/todo/new', methods=['POST'])
+def new():
+    title = request.form['title']
+    todo = Todo(title)
+    db.session.add(todo)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/todo/del/<int:id>')
+def delete(id):
+    todo = Todo.query.get(id)
+    if todo:
+        db.session.delete(todo)
+        db.session.commit()
+    return redirect(url_for('index'))
+    
+@app.route('/todo/done/<int:id>')
+def done(id):
+    todo = Todo.query.get(id)
+    if todo:
+        todo.status = True
+        db.session.commit()
+    return redirect(url_for('index'))
+    
+@app.route('/todo/retrieve/<int:id>')
+def retrive(id):
+    todo = Todo.query.get(id)
+    if todo:
+        todo.status = False
+        db.session.commit()
+    return redirect(url_for('index'))
     
 @app.errorhandler(404)
 def page_not_found(e):
@@ -63,7 +98,7 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500        
+    return render_template('500.html'), 500
 
 def create_database():
     c = Category('python')
