@@ -62,7 +62,10 @@ def index():
 @app.route('/todo/new', methods=['POST'])
 def new():
     title = request.form['title']
-    todo = Todo(title)
+    category = request.form['category']
+    c = Category.query.filter(Category.name == category).first()
+    
+    todo = Todo(title, c)
     db.session.add(todo)
     db.session.commit()
     return redirect(url_for('index'))
