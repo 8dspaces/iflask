@@ -6,12 +6,12 @@
 
     <div class="todos">
         
-      <div class="panel panel-primary">
-      <div class="panel-heading"> <h4><strong>待办事项：</strong></h4></div>
+      <div class="panel panel-default">
+      <div class="panel-heading"> <h5 class="title">待办事项：</h5></div>
       <div class="panel-body">
       <table class = "table">
             <thead>
-                <tr><th width = "650px;">ToDo List</th><th>Category</th><th>Next</th></tr>
+                <tr><th width = "500px;">ToDo List</th><th>Category</th><th>Next</th></tr>
             </thead>
             <tbody>
                 {% for todo in todos %}
@@ -37,47 +37,10 @@
         
     <div class="newtodo">
         <div class="title">
-            <h4>新增事项：</h4>
+            <h5>新增事项：</h5>
         </div> <!--end title--> 
         
-        <!--form  action = "/todo/new" method="Post">
-        <div class="col-lg-8">
-         <div class="form-group">
-         <div class="input-group">
-          <input type="text" name = "title" class="form-control" placeholder = "What's Next...">
-          <span class="input-group-btn">
-                    <select  name = "category">
-                            {% for category in categories%}
-                              <option>{{category.name}}</option>
-                            {% endfor %}
-                    </select>
-          </span>
-          <button class="form-control btn-primary" type="submit">New Task</button>
-        </div>
-         </div>
-    </div>
-
-             
-            <div class="col-lg-8">
-                  <span class="input-group-btn" >
-                     <select  class="form-control" name = "category">
-                        {% for category in categories%}
-                          <option>{{category.name}}</option>
-                        {% endfor %}
-                      </select>
-                  </span>
-                <div class="input-group">
-
-                      <input type="text" name = "title" class="form-control" placeholder = "What's Next...">
-                      <span class="input-group-btn">
-                        <button class="form-control btn-primary" type="submit">New Task</button>
-                      </span>
-
-                </div>
-            </div>
-       
-        </form-->
-        <div class="col-lg-10">
+        
         <form class="form-inline" action = "/todo/new" method="Post">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-male"></i></span>
@@ -92,25 +55,28 @@
                     </select>           
                 </div>
                 <div class="form-group">
-                    <input class="form-control btn-primary" type="submit" text="New Task">
+                    <input class="form-control btn-primary" type="submit" value="New Task">
                 </div>
             </div>
         </form>
-        </div><!--end col-lg-10-->
-    </div><!--newtodo-->
-    </div><!--panel-body-->
-    </div><!--panel-->
+        
     </div>
+    </div><!--panel-body-->
+    <br />
+    <div class="panel-footer"> <br /></div> 
+   
+  
+    </div><!--panel-->
+
     
     <hr />
-    
     <div class="panel panel-default">
-        <div class="panel-heading"> <h4><strong>已完成: </strong></h4></div>
+        <div class="panel-heading"> <h5 class="title">已完成:</h5></div>
         <div class="panel-body">
             <div class="dones">
                 <table class = "table">
                     <thead>
-                        <tr><th width = "650px;">ToDo List</th><th>Category</th><th>Next</th></tr>
+                        <tr><th width = "500px;">ToDo List</th><th>Category</th><th>Next</th></tr>
                     </thead>
                     <tbody>
                         {% for todo in dones %}
@@ -128,5 +94,60 @@
             </div>
         </div>
     </div>
+    
 
+    
+    </div><!--todos-->
+
+<hr />
+    
+
+{% endblock %}
+
+{% block footer%}
+<div class="navbar-fixed-bottom">
+    <div class="container">
+    <footer> 
+        <div class="row">
+                    <div class="col-lg-12">
+                                      &copy; 2014 
+
+                                      <br>
+                                      Powered by 
+                                      <a href="http://getbootstrap.com title="Bootstrap">Bootsrap</a>
+                       </div>   
+        </div>
+    </footer>
+    </div>
+</div> 
+
+{% endblock %}
+
+{% block sidebar %}
+    <!--ul class="nav nav-list">
+      <li class="nav-header">Category</li>
+      <li class="active"><a href="/index">All</a></li>
+      {% for category in categories%}
+        <li><a href="/todo/category/{{category.name}}">{{category.name}}</a></li>
+      {% endfor %}
+    </ul-->
+    
+    <div class="list-group">
+      <a href="#" class="list-group-item active">
+        Category
+      </a>
+      <a href="/index" class="list-group-item">All<span class="badge">{{todos.__len__() + dones.__len__()}}</span></a>
+      {% for category in categories%}
+        <a href="/todo/category/{{category.name}}" class="list-group-item">{{category.name}}<span class="badge">{{category.todos.count()}}</span></a>
+      {% endfor %}
+
+    </div>
+    <div>
+      <form class="form-inline" action = "/todo/category/new" method="Post">
+            <div class="form-group">
+                <input type="text" name="name" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">New</button>
+      </form>
+    </div>
 {% endblock %}
