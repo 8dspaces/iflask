@@ -7,6 +7,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir,'test.db')
+SECRET_KEY = '\xf0\xe4},\x8f\x10\xe3.\x13?\x9eP\xcd!\xb1\x17\xa2%\xbbU'
 
 app = Flask(__name__)
 app.config.from_object(__name__) 
@@ -70,6 +71,21 @@ def new():
     db.session.commit()
     return redirect(url_for('index'))
 
+@app.route('/todo/category/new', methods=['POST'])
+def category_new():
+    name = request.form['name']
+    c = Category.query.filter(Category.name == name).first()
+    
+    if c:
+        flash("Category already exist!")
+    else:
+        category = Category(name)
+        db.session.add(category)
+        db.session.commit()
+        flash("Category be created successfully!")
+        
+    return redirect(url_for('index'))
+    
 @app.route('/todo/del/<int:id>')
 def delete(id):
     todo = Todo.query.get(id)
@@ -93,7 +109,18 @@ def retrive(id):
         todo.status = False
         db.session.commit()
     return redirect(url_for('index'))
+
+@app.route('/todo/category/<name>')
+def category(name):
+
+    categories = Category.query.all()
+    category = Category.query.filter(Category.name == name).first()
     
+    todos = category.todos.filter(Todo.status == False).all()  # This is controlled by backref 
+    dones = category.todos.filter(Todo.status == True).all()
+    
+    return render_template('index.html',todos = todos, dones = dones, categories = categories )
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
