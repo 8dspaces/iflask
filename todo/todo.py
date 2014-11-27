@@ -53,6 +53,7 @@ class Category(db.Model):
 
 # view functions 
 @app.route('/')
+@app.route('/todo/')
 @app.route('/index/')
 def index():
     todos = Todo.query.filter(Todo.status == False).all()
@@ -121,6 +122,25 @@ def category(name):
     
     return render_template('index.html',todos = todos, dones = dones, categories = categories )
 
+# handle picture related view functions 
+
+@app.route('/pic')
+def pictures():
+    pics = os.listdir(basedir + '/static')
+    pics = [i for i in pics if i[-4:] in ['.png','.jpg','.bmp']]
+    return render_template('pictures.html', pics = pics)
+
+@app.route('/view/pics/<filename>')
+def view_pic(filename):
+    return render_template('view_pic.html', filename = filename)
+    
+@app.route('/pic/upload', methods = ['POST'])
+def upload_pic():
+    if request.method == 'POST':
+        f = request.files['pic']
+        f.save(os.path.join(basedir, '123.bmp'))
+    return render_template('pictures.html')
+    
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}iFlask-todo{% endblock %}
+
+{% block page_content %}
+
+    <div class="pictures">
+        <form class="form-inline"  action="/pic/upload" enctype="multipart/form-data"  method="Post">
+        <div class="form-group">
+            <input type="file" name="pic" Text="Upload"/>
+        </div>
+            <input class="btn-primary" type="submit" value="Upload" />
+        </form>
+    </div>
+    <hr />
+    <div class="row">
+    {% for pic in pics %}
+      <div class="col-xs-6 col-md-3">
+        
+        <a href="/view/pics/{{pic}}" class="thumbnail">
+          <img src="{{ url_for('static', filename= pic) }}" alt="Test image">
+        </a>
+        
+      </div>
+      {% endfor %}
+    </div>
+
+<hr />
+    
+
+{% endblock %}
+
+
+{% block sidebar %}
+{% endblock %}
