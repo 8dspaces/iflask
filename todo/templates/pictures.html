@@ -5,7 +5,7 @@
 {% block page_content %}
 
     <div class="pictures">
-        <form class="form-inline"  action="/pic/upload" enctype="multipart/form-data"  method="Post">
+        <form class="form-inline"  action="/pic" enctype="multipart/form-data"  method="Post">
         <div class="form-group">
             <input type="file" name="pic" Text="Upload"/>
         </div>
@@ -18,12 +18,34 @@
       <div class="col-xs-6 col-md-3">
         
         <a href="/view/pics/{{pic}}" class="thumbnail">
-          <img src="{{ url_for('static', filename= pic) }}" alt="Test image">
+          <img src="{{ url_for('static', filename= "pics/" + pic)}}" alt="Test image">
         </a>
         
       </div>
       {% endfor %}
     </div>
+    <nav>
+      <ul class="pagination">
+        {% if page > 0 %}
+            <li><a href="/pic/{{page-1}}">Prev</a></li>
+        {% else %}
+            <li class="disabled"><a href="#">Prev</a></li>
+        {% endif %}
+        {% for p in range(pages) %}  
+            {% if page == p%}
+                <li class="active"><a href="/pic/{{p}}">{{ p+1 }}</a></li>
+            {% else %}
+                <li ><a href="/pic/{{p}}">{{ p+1 }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page+1 < pages %}
+            <li><a href="/pic/{{page+1}}">Next</a></li>
+        {% else %}
+            <li class="disabled"><a href="#">Next</a></li>
+        {% endif %}
+      </ul>
+      </nav>
+</div>
 
 <hr />
     

@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for, flash,requ
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bootstrap import Bootstrap
 from datetime import datetime
+from werkzeug import secure_filename
 import os 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -124,23 +125,33 @@ def category(name):
 
 # handle picture related view functions 
 
-@app.route('/pic')
-def pictures():
-    pics = os.listdir(basedir + '/static')
-    pics = [i for i in pics if i[-4:] in ['.png','.jpg','.bmp']]
-    return render_template('pictures.html', pics = pics)
+
 
 @app.route('/view/pics/<filename>')
 def view_pic(filename):
     return render_template('view_pic.html', filename = filename)
     
-@app.route('/pic/upload', methods = ['POST'])
-def upload_pic():
+#@app.route('/pic/upload', methods = ['POST'])
+@app.route('/pic/',methods = ['POST', 'GET'])
+@app.route('/pic/<int:page>',methods = ['POST', 'GET'])
+def pictures( page= 0):
     if request.method == 'POST':
         f = request.files['pic']
-        f.save(os.path.join(basedir, '123.bmp'))
-    return render_template('pictures.html')
-    
+        f.save(os.path.join(basedir, 'static/pics/'+secure_filename(f.filename)))
+        return redirect(url_for('pictures'))
+    else:
+        pics = os.listdir(basedir + '/static/pics')
+        pics = [i for i in pics if i[-4:] in ['.png','.jpg','.bmp']]
+        pages = (len(pics)+13)/12
+        pics = pics[page*12:page*12+12]
+        return render_template('pictures.html', pics = pics, page =page, pages=pages)
+
+#@app.route('/pic')
+#def pictures():
+#    pics = os.listdir(basedir + '/static/pics')
+#    pics = [i for i in pics if i[-4:] in ['.png','.jpg','.bmp']]
+#    return render_template('pictures.html', pics = pics)
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
