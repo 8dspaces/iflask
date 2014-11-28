@@ -13,8 +13,9 @@ This repository is used to learn something about flask
     + every todo item have Category(One To Many)
     + Category can be Add and View 
   
-![](.\todo\iflask-todo.png)
+![](http://spaces8.qiniudn.com/gh-iflask-todo.png)
     
 + iflask-Pictures 
     + Simpy Picture show/upload (currently save on statics, beter soulution to save it on Cloud, like qiniu)
-![](.\todo\iflask-pictures.png)
+
+![](http://spaces8.qiniudn.com/gh-iflask-pictures.png)
