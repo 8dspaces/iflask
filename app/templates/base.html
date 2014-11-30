@@ -50,10 +50,11 @@
             </form>
             <ul class="nav navbar navbar-right">
                 {% if current_user.is_authenticated() %}
-                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Log Out - {{current_user.username|title}}</a></li>
                 {% else %}
                 <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
                 {% endif %}
+                
             </ul>
         </div>
     </div>
