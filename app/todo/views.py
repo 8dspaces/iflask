@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for, request, current_app,session
+from flask.ext.login import login_user, logout_user, login_required
 from .. import db 
 from ..models import Todo, Category 
 from . import todo
@@ -14,6 +15,7 @@ def index():
     return render_template('index.html',todos = todos, dones = dones, categories=categories )
 
 @todo.route('/todo/new', methods=['POST'])
+@login_required
 def new():
     title = request.form['title']
     category = request.form['category']
@@ -25,6 +27,7 @@ def new():
     return redirect(url_for('todo.index'))
 
 @todo.route('/todo/category/new', methods=['POST'])
+@login_required
 def category_new():
     name = request.form['name']
     c = Category.query.filter(Category.name == name).first()
@@ -40,6 +43,7 @@ def category_new():
     return redirect(url_for('todo.index'))
     
 @todo.route('/todo/del/<int:id>')
+@login_required
 def delete(id):
     todo = Todo.query.get(id)
     if todo:
@@ -48,6 +52,7 @@ def delete(id):
     return redirect(url_for('todo.index'))
     
 @todo.route('/todo/done/<int:id>')
+@login_required
 def done(id):
     todo = Todo.query.get(id)
     if todo:
@@ -56,6 +61,7 @@ def done(id):
     return redirect(url_for('todo.index'))
     
 @todo.route('/todo/retrieve/<int:id>')
+@login_required
 def retrive(id):
     todo = Todo.query.get(id)
     if todo:

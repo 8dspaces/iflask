@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for, request, current_app,session
+from flask.ext.login import login_user, logout_user, login_required
 from . import pic
 import os 
 from werkzeug import secure_filename
@@ -7,6 +8,7 @@ from werkzeug import secure_filename
 
 @pic.route('/pic/',methods = ['POST', 'GET'])
 @pic.route('/pic/<int:page>',methods = ['POST', 'GET'])
+@login_required
 def pictures( page= 0):
     if request.method == 'POST':
         f = request.files['pic']
